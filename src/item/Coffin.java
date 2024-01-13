@@ -6,12 +6,12 @@ import enums.Color;
 import enums.ItemType;
 
 public class Coffin extends Item {
-    private String name = "гроб";
     private Corpse owner;
     private Color color = null;
     private Grave grave;
     private boolean lock;
-    public Coffin( Corpse owner, Color color, Grave grave, boolean lock){
+    public Coffin(String name, Corpse owner, Color color, Grave grave, boolean lock){
+        super(name);
         this.color=color;
         this.grave = grave;
         this. owner=owner;

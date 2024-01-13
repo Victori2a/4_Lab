@@ -6,11 +6,14 @@ import exception.WrongDriverException;
 import item.Car;
 
 public interface Drive {
-    public void drive(Car car) throws WrongDriverException;
-    public void startCar(Car car);
-    public default void dissamble(Car car){
+    void drive(Car car) throws WrongDriverException;
+    default void startCar(Car car){
+        System.out.println(car.getDriver() + " завёл машину");
+        car.started();
+    };
+    default void dissamble(Car car){
         car.getMechanisms();
-        System.out.print(this + " разбирал "+car.name+" машины и копался в механизмах ");
+        System.out.print(this + " разбирал "+car.getName()+" машины и копался в их механизмах ");
     }
-    public void getInCar(Car car, Human... humans);
+    void getInCar(Car car, Human... humans);
 }

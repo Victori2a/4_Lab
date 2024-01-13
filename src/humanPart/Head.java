@@ -7,7 +7,7 @@ public class Head extends BodyPart{
     private Face face;
     private Mouth mouth;
     public Head(String name, Human owner) {
-        super("голова", owner);
+        super(name, owner);
         eyes = new Eyes("глаза", owner);
         face = new Face("лицо", owner);
         mouth = new Mouth("рот", owner);

@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class Car extends Item implements Position, AbleToStore {
-    public String name;
     private boolean isSuitable = true;
     private Human driver = null;
     private boolean headlights = false;
@@ -20,15 +19,18 @@ public class Car extends Item implements Position, AbleToStore {
     private ArrayList<Item> trunk = new ArrayList<>();
     private ArrayList<Human> interior = new ArrayList<>();
     public Car(String name, Human driver){
+        super(name);
         this.driver = driver;
-        this.name = name;
     }
-    public Car(String name){
-        this.name = name;
-    }
+    public Car(String name){super(name);}
     public void setItems(Item... items) {
         this.trunk.addAll(Arrays.asList(items));
     }
+    @Override
+    public String getWhere() {
+        return "машину";
+    }
+
     public void setHumans(Human... humans) {
         this.interior.addAll(Arrays.asList(humans));
         System.out.println("В машину "+getDriver()+"а сели ");
@@ -66,6 +68,14 @@ public class Car extends Item implements Position, AbleToStore {
     }
     public String toString(){
         return "машиной";
+    }
+
+    @Override
+    public void addPosition(Human human) {
+        human.addPos(this);
+    }
+    public void addPosition(Item item) {
+        item.addPos(this);
     }
 }
 

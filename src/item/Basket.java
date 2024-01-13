@@ -3,8 +3,10 @@ package item;
 import base.Item;
 
 public class Basket extends Item {
-    public String name = "корзина";
     Flowers flowers;
+    public Basket(String name) {
+        super(name);
+    }
     public void setFlowers(){
         this.flowers = Flowers.values()[(int)(Math.random()*Flowers.values().length)];
     }

@@ -12,6 +12,12 @@ public abstract class Item {
     protected Location location;
     protected Position position;
     protected ArrayList<ItemType> types = new ArrayList<>();
+    public Item(String name){
+        this.name = name;
+    }
+    public String getName(){
+        return name;
+    }
     public Color getColor() {
         return null;
     }
@@ -28,7 +34,7 @@ public abstract class Item {
         location.addItem(this);
         this.location = location;
     }
-    protected void addPos(Position position){
+    public void addPos(Position position){
         this.position = position;
     }
     public void stand(Position position){

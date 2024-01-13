@@ -4,10 +4,12 @@ package item;
 import base.Item;
 
 public class Book extends Item {
-    protected String nameOfBook;
-    public Book(String nameOfBook) {
-        this.nameOfBook = nameOfBook;
+    public int pages;
+    public Book(String name, int pages) {
+        super(name);
+        this.pages = pages;
     }
-    Book() {
+    public String getName(){
+        return name;
     }
 }

@@ -6,7 +6,7 @@ import enums.HumanType;
 public class Eyes extends BodyPart{
     private double clarity;
     public Eyes(String name, Human owner) {
-        super("глаза", owner);
+        super(name, owner);
         this.clarity = 1;
     }
     public void setClarity(double var){

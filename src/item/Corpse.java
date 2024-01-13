@@ -5,9 +5,9 @@ import base.Item;
 import enums.Color;
 
 public class Corpse extends Item {
-    private String name = "мертвец";
     private String corpseName;
-    public Corpse(String corpseName){
+    public Corpse(String name,String corpseName){
+        super(name);
         this.corpseName = corpseName;
     }
     public String toString() {

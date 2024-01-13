@@ -21,6 +21,7 @@ public class Human implements Drive{
     protected Human lookHuman;
     protected Item lookItem;
     protected Location lookLocation;
+    public int age;
     protected double[] conditions = new double[Condition.values().length];
     {for (int i = 0; i<Condition.values().length;i++){
       this.conditions[i] = 60;
@@ -49,21 +50,16 @@ public class Human implements Drive{
     public Location getLocation() {
         return location;
     }
-    public Position getPosition(){
-        return position;
-    }
     public void setTypes(HumanType... humanTypes) {
         this.humanTypes.addAll(Arrays.asList(humanTypes));
     }
     public void setThings(Item... thing){
         this.things.addAll(Arrays.asList(thing));
-        //System.out.println(this+" получил" + Arrays.toString(thing));
     }
     public Item[] getThings() {
         Item[] things1 = new Item[this.things.size()];
         return this.things.toArray(things1);
     }
-
     public boolean hasType(HumanType humanType) {
         return humanTypes.contains(humanType);
     }
@@ -72,8 +68,10 @@ public class Human implements Drive{
             this.humanTypes.remove(type);
         }
     }
-    public void read(Book fragment){
-        System.out.println(this.occupation + "прочитал" + fragment);
+    public void read(Book book, String start){
+        this.lookItem = book;
+        this.setThings(book);
+        System.out.println(this.occupation + " читал " + book.getName()+" cо слов :"+ start);
     }
     public void stand(Position position){
         position.addPosition(this);
@@ -90,12 +88,12 @@ public class Human implements Drive{
     public void give(Human human, Item item){
         this.getThings();
         human.setThings(item);
-        System.out.print(human+" получил "+item+" от "+ this);
+        System.out.print(human+" получил "+item.getName()+" от "+ this);
         if (this.hasType(HumanType.ANXIOUS)){
             System.out.println(" после мучительных колебаний ");
         }
-        if (human.righthands.getType()!=null){
-            System.out.println(human+" держал "+item+" в cвоих "+human.righthands.getType() + " руках" );
+        if (human.occupation==Occupation.MECHANIC){
+            System.out.println(human+" держал "+item.getName()+" в cвоих мозолистых руках" );
         }
     }
     public void look(Human human) {
@@ -106,16 +104,16 @@ public class Human implements Drive{
         if (this.hasType(HumanType.EMBARRASSED)){
             System.out.println(" и быстро отвёл глаза");
             lookHuman = null;
-        } if (human.head.getFace().hasType(BodyType.EXHAUSTED)){
+        } if (human.head.getFace().hasType(FaceType.EXHAUSTED)){
             human.setCondition(Condition.FUN,-11);
-            System.out.println("Лицо "+human+"а было "+ BodyType.EXHAUSTED);
+            System.out.println("Лицо "+human+"а было "+ FaceType.EXHAUSTED);
         }
     }
     public void look(Item item) {
         lookHuman = null;
         lookItem = item;
         lookLocation = null;
-        System.out.println(this + " посмотрел на " + item );
+        System.out.println(this + " посмотрел на " + item.getName() );
         if (item.getColor() == Color.BRIGHT_GREEN){
             this.head.getEyes().act(this);
             this.setCondition(Condition.COMFORT, -5);
@@ -128,9 +126,6 @@ public class Human implements Drive{
                 this.head.getEyes().setClarity(-0.02);
             }
         }
-        else {
-            this.say("Что это у тебя за "+ item+"?");
-        }
     }
     public void look(Location location) {
         lookHuman = null;
@@ -138,20 +133,20 @@ public class Human implements Drive{
         lookLocation = location;
         System.out.print(this + " оглядывал " + location +". Здесь было  " );
         System.out.println(Arrays.toString(location.getTypes()));
-        if (location.hasType(ItemType.BURIAL)){
+        if (location.name == "кладбище"){
             setCondition(Condition.FUN, -5);
         }
     }
-    public void askedRead(Human human, Book book){
+    public void askedRead(Human human, Book book, String start){
         System.out.println("по просьбе "+ this);
-        human.read(book);
+        human.read(book, start);
     }
 
-    protected void addPos(Position position){
+    public void addPos(Position position){
         this.position = position;
     }
     public void argue(Human human){
-        if (this.getLocation().hasType(ItemType.QUIETLY)){
+        if (this.getLocation().hasType(LocType.QUIETLY)){
             System.out.println(this + " не поссорился с " + human + ", т.к на " + getLocation() + " должно быть тихо");
         } else {
             System.out.println(this+" поссорился с  " + human);
@@ -165,11 +160,13 @@ public class Human implements Drive{
         System.out.println(this + " сказал " + speech);
         if (this.occupation==Occupation.DIR_FUNERAL_HOME){
             for (Human human : getLocation().getPeople()){
-                human.setCondition(Condition.FUN,-1);
+                human.setCondition(Condition.FUN,Math.random()*3);
+                human.setCondition(Condition.SUPRISE, 1);
             }
         }
     }
     public void say(Human human, String speech){
+        human.setCondition(Condition.SUPRISE, 1);
         if (this.lookHuman!=human){
             look(human);
         }
@@ -182,8 +179,7 @@ public class Human implements Drive{
         else {
             if (human.hasType(HumanType.ANXIOUS)){
                 System.out.println("Нормально, отозвалась " + human);
-                human.head.getMouth().setTypes(BodyType.MONSTROUS);
-                human.head.getMouth().stretchLips();
+                human.smile();
                 human.setCondition(Condition.SATISFACTION, -3);
             }
             else{
@@ -191,12 +187,16 @@ public class Human implements Drive{
             }
         }
     }
-    public void smile(BodyType... bodyTypes){
-        head.getMouth().setTypes(BodyType.MONSTROUS, BodyType.WIDE);
+    public void say(Human human, Item item){
+        human.setCondition(Condition.SUPRISE, 1);
+        this.lookItem = item;
+        System.out.println("Что это у тебя за "+ item.getName()+"? Спросил у "+human+" "+this);
+    }
+    public void smile(){
         head.getMouth().stretchLips();
     }
     public void seem(){
-        if (this.lookHuman.head.getFace().hasType(BodyType.BRISTLE)){
+        if (this.lookHuman.head.getFace().hasType(FaceType.BRISTLE)){
             System.out.println(this +" казалось, что " + this.lookHuman + " выглядит ещё старше");
         }
         if (this.lookHuman.hasType(HumanType.CONFUSED)){
@@ -237,12 +237,8 @@ public class Human implements Drive{
             System.out.println(this + " не понял, что  это такое");
         }
     }
-    public void startCar(Car car){
-        System.out.println(car.getDriver() + " завёл машину");
-        car.started();
-    }
     public void smoke(){
-        Cigarette cigarette = new Cigarette();
+        Cigarette cigarette = new Cigarette("сигарета");
         cigarette.lit();
         System.out.println(this + " решил покурить");
         setCondition(Condition.HEALTH, -0.3);
@@ -253,7 +249,7 @@ public class Human implements Drive{
         if (items.length==1){
             Item item = items[0];
             if(item.getClass()== Coffin.class){
-                System.out.println(this + " положил гроб в"+ store);
+                System.out.println(this + " положил гроб в "+ store.getWhere());
             }
         }
         store.setItems(items);
@@ -262,13 +258,15 @@ public class Human implements Drive{
         if (this!=car.getDriver()){
             throw new WrongDriverException(this+" не может сесть за руль, т.к не вписан в страховку!");
         }
-            System.out.println(this + " нажал на газ");
-            car.start();
-            getLocation().removePeople(this);
+        System.out.println(this + " нажал на газ");
+        car.start();
+        getLocation().removePeople(this);
 
     }
     public void getInCar(Car car, Human... humans){
         car.setHumans(humans);
+        ArrayList<Human> people = new ArrayList<>(Arrays.asList(humans));
+        people.forEach(human -> addPos(car));
     }
     public void dissamble(Car car){
         Drive.super.dissamble(car);
@@ -276,6 +274,7 @@ public class Human implements Drive{
     }
     public void goUpTo(Human human){
         this.stand(human.position);
+        this.setLocation(human.getLocation());
     }
     public void takeBodyPart(BodyPart part){
         if (righthands.hold == null){
@@ -317,7 +316,13 @@ public class Human implements Drive{
             case COLLECT:
                 this.conditions[Condition.COLLECT.ordinal()] +=var;
                 break;
+            case SUPRISE:
+                this.conditions[Condition.SUPRISE.ordinal()] +=var;
+                break;
         }
+    }
+    public void setAge(int age){
+        this.age = age;
     }
     public double getCondition(Condition cond){
         return this.conditions[cond.ordinal()];
@@ -345,6 +350,9 @@ public class Human implements Drive{
         return name.equals(human.name);
     }
     public int hashCode(){
-        return Objects.hash(name, occupation);
+        int hash = 31;
+        hash += 31 * Objects.hashCode(name);
+        return hash;
     }
+
 }

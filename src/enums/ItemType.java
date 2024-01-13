@@ -1,8 +1,6 @@
 package enums;
 
 public enum ItemType {
-    QUIETLY("тихо"),
-    BURIAL(" всё покрыто могилами"),
     PSEUDO_ROMAN("псевдоримский"),
     INCONSPICUOUS("незаметный"),
     BRIGHT("яркий"),

@@ -3,5 +3,6 @@ package interfaces;
 import base.Item;
 
 public interface AbleToStore {
-    public void setItems(Item... items);
+    void setItems(Item... items);
+    String getWhere();
 }

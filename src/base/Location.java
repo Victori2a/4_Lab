@@ -3,25 +3,26 @@ package base;
 import java.util.ArrayList;
 import java.util.Arrays;
 import enums.ItemType;
+import enums.LocType;
 import exception.ObjectAddedToLocationException;
 
 public class Location {
-    private String name;
+    protected String name;
     private ArrayList<Human> people = new ArrayList<>();
     private ArrayList<Item> items = new ArrayList<>();
-    private ArrayList<ItemType> locType = new ArrayList<>();
-    public Location(String name, ItemType... locType){
+    private ArrayList<LocType> locType = new ArrayList<>();
+    public Location(String name, LocType... locType){
         this.name = name;
         setTypes(locType);
     }
-    public void setTypes(ItemType... locTypes) {
+    public void setTypes(LocType... locTypes) {
         this.locType.addAll(Arrays.asList(locTypes));
     }
-    public ItemType[] getTypes() {
-        ItemType[] locType1 = new ItemType[this.locType.size()];
+    public LocType[] getTypes() {
+        LocType[] locType1 = new LocType[this.locType.size()];
         return this.locType.toArray(locType1);
     }
-    public boolean hasType(ItemType locType) {
+    public boolean hasType(LocType locType) {
         return this.locType.contains(locType);
     }
     public void setPeople(Human... people) throws ObjectAddedToLocationException {
@@ -54,15 +55,15 @@ public class Location {
             item.setLocation(this);
         }
     }
-//    public Item[] getItems() {
-//        Item[] items = new Item[this.items.size()];
-//        return this.items.toArray(items);
-//    }
-//    public void removeItems(Item... items) {
-//        for(Item item : items){
-//            this.items.remove(item);
-//        }
-//    }
+    public Item[] getItems() {
+        Item[] items = new Item[this.items.size()];
+        return this.items.toArray(items);
+    }
+    public void removeItems(Item... items) {
+        for(Item item : items){
+            this.items.remove(item);
+        }
+    }
     @Override
     public String toString() {
         return name;

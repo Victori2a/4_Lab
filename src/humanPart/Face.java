@@ -1,24 +1,24 @@
 package humanPart;
 
 import base.Human;
-import enums.BodyType;
+import enums.FaceType;
 
 import java.util.Arrays;
 import java.util.ArrayList;
 
 public class Face extends BodyPart{
-    protected ArrayList<BodyType> faceType = new ArrayList<>();
+    protected ArrayList<FaceType> faceType = new ArrayList<>();
     public Face(String name, Human owner) {
-        super("лицо", owner);
+        super(name, owner);
     }
-    public void setTypes(BodyType... faceTypes){
+    public void setTypes(FaceType... faceTypes){
         faceType.addAll(Arrays.asList(faceTypes));
     }
-    public BodyType[] getTypes() {
-        BodyType[] types1 = new BodyType[this.faceType.size()];
+    public FaceType[] getTypes() {
+        FaceType[] types1 = new FaceType[this.faceType.size()];
         return this.faceType.toArray(types1);
     }
-    public boolean hasType(BodyType type) {
+    public boolean hasType(FaceType type) {
         return faceType.contains(type);
     }
 }

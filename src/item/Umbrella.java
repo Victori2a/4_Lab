@@ -7,9 +7,9 @@ import enums.ItemType;
 import java.util.Arrays;
 
 public class Umbrella extends Item {
-    public String name = "зонт";
     private Color color;
-    public Umbrella(Color color, ItemType... types){
+    public Umbrella(String name, Color color, ItemType... types){
+        super(name);
         this.color = color;
         this.types.addAll(Arrays.asList(types));
     }

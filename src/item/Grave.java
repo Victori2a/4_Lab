@@ -1,5 +1,6 @@
 package item;
 
+import base.Human;
 import base.Item;
 import enums.Color;
 import base.Position;
@@ -8,10 +9,10 @@ public class Grave extends Item {
     private Corpse owner;
     public Color color;
     private Edge edge;
-    public final String name = "могила";
-    public Grave(Corpse owner){
+    public Grave(String name, Corpse owner){
+        super(name);
         this.owner = owner;
-        edge = new Edge();
+        edge = new Edge("край могилы");
     }
     public Edge getEdge(){
         return edge;
@@ -23,9 +24,18 @@ public class Grave extends Item {
 
     public class Edge extends Item implements Position {
         private Color color;
-        private final String name = "край могилы ";
+        public Edge(String name) {
+            super(name);
+        }
         public Color getColor(){
             return color;
+        }
+        @Override
+        public void addPosition(Human human) {
+            human.addPos(this);
+        }
+        public void addPosition(Item item) {
+            item.addPos(this);
         }
         @Override
         public String toString() {
