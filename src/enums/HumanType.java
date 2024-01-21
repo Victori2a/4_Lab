@@ -12,7 +12,7 @@ public enum HumanType {
     SILENT("молчаливый"),
     ANXIOUS("тревожный"),
     BLINDED("ослеплённый");
-    String name;
+    final String name;
     HumanType(String name){
         this.name = name;
     }

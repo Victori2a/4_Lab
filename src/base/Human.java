@@ -3,13 +3,13 @@ package base;
 import enums.*;
 import interfaces.*;
 import item.*;
-import humanPart.*;
+import humanpart.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 import exception.*;
 
-public class Human implements Drive{
+public class Human implements HasLocation, Drive{
     protected Occupation occupation;
     protected String name;
     protected Position position;
@@ -18,27 +18,29 @@ public class Human implements Drive{
     protected ArrayList<Human> foe = new ArrayList<>();
     protected ArrayList<Item> things = new ArrayList<>();
     protected ArrayList<Clothes> clothes = new ArrayList<>();
-    protected Human lookHuman;
-    protected Item lookItem;
-    protected Location lookLocation;
-    public int age;
+    public Human lookHuman;
+    public Item lookItem;
+    public Location lookLocation;
+    private int age;
     protected double[] conditions = new double[Condition.values().length];
     {for (int i = 0; i<Condition.values().length;i++){
       this.conditions[i] = 60;
     }}
-    public Head head = new Head("голова", this);
-    public Hair hair = new Hair("волосы", this);
-    public Hands righthands = new Hands("правая рука", this);
-    public Hands lefthands = new Hands("левая рука", this);
+    private final Head head = new Head("голова", this);
+    private final Hair hair = new Hair("волосы", this);
+    private final Hands righthands = new Hands("правая рука", this);
+    private final Hands lefthands = new Hands("левая рука", this);
     public Human(Occupation occupation){
         this.occupation = occupation;
     }
-    public Human(String name,Occupation occupation){
+    public Human(String name,int age, Occupation occupation){
         this.name = name;
         this.occupation = occupation;
+        this. age = age;
     }
-    public Human(String name){
+    public Human(String name, int age){
         this.name = name;
+        this.age = age;
     }
     public String getName(){
         return name;
@@ -55,6 +57,7 @@ public class Human implements Drive{
     }
     public void setThings(Item... thing){
         this.things.addAll(Arrays.asList(thing));
+        this.righthands.holdItem.addAll(things);
     }
     public Item[] getThings() {
         Item[] things1 = new Item[this.things.size()];
@@ -69,8 +72,9 @@ public class Human implements Drive{
         }
     }
     public void read(Book book, String start){
-        this.lookItem = book;
+        this.look(book);
         this.setThings(book);
+        this.setCondition(Condition.COLLECT, 3);
         System.out.println(this.occupation + " читал " + book.getName()+" cо слов :"+ start);
     }
     public void stand(Position position){
@@ -88,12 +92,13 @@ public class Human implements Drive{
     public void give(Human human, Item item){
         this.getThings();
         human.setThings(item);
+        human.righthands.holdItem.add(item);
         System.out.print(human+" получил "+item.getName()+" от "+ this);
         if (this.hasType(HumanType.ANXIOUS)){
             System.out.println(" после мучительных колебаний ");
         }
         if (human.occupation==Occupation.MECHANIC){
-            System.out.println(human+" держал "+item.getName()+" в cвоих мозолистых руках" );
+            System.out.println(human+" держал в cвоих мозолистых руках "+item);
         }
     }
     public void look(Human human) {
@@ -133,7 +138,7 @@ public class Human implements Drive{
         lookLocation = location;
         System.out.print(this + " оглядывал " + location +". Здесь было  " );
         System.out.println(Arrays.toString(location.getTypes()));
-        if (location.name == "кладбище"){
+        if (location.name.equals("кладбище")){
             setCondition(Condition.FUN, -5);
         }
     }
@@ -158,21 +163,24 @@ public class Human implements Drive{
     }
     public void say(String speech){
         System.out.println(this + " сказал " + speech);
+        head.getMouth().move();
         if (this.occupation==Occupation.DIR_FUNERAL_HOME){
             for (Human human : getLocation().getPeople()){
                 human.setCondition(Condition.FUN,Math.random()*3);
-                human.setCondition(Condition.SUPRISE, 1);
+                human.setCondition(Condition.SURPRISE, 1);
             }
         }
     }
     public void say(Human human, String speech){
-        human.setCondition(Condition.SUPRISE, 1);
+        human.setCondition(Condition.SURPRISE, 1);
+        human.lookHuman = this;
         if (this.lookHuman!=human){
             look(human);
         }
         System.out.println(speech);
         if (human.hasType(HumanType.SILENT)){
-            human.nod();
+            human.head.bow();
+            human.head.raise(this);
             System.out.println(human+" только кивнул");
             human.setCondition(Condition.COMFORT, -4);
         }
@@ -187,10 +195,12 @@ public class Human implements Drive{
             }
         }
     }
-    public void say(Human human, Item item){
-        human.setCondition(Condition.SUPRISE, 1);
+    public void sayAbout(Human human, Item item){
+        human.setCondition(Condition.SURPRISE,2);
+        human.setCondition(Condition.SURPRISE, 1);
         this.lookItem = item;
         System.out.println("Что это у тебя за "+ item.getName()+"? Спросил у "+human+" "+this);
+        human.give(this, item);
     }
     public void smile(){
         head.getMouth().stretchLips();
@@ -230,7 +240,8 @@ public class Human implements Drive{
     public void understand(){
         if (Math.random() < 0.8d){
             System.out.println(this + " понял, что это такое");
-            if (this.getName() == "Луис"){
+            setCondition(Condition.SURPRISE, 3);
+            if (this.getName().equals("Луис")){
                 this.removeType(HumanType.BLINDED, HumanType.CONFUSED);
             }
         } else{
@@ -242,8 +253,10 @@ public class Human implements Drive{
         cigarette.lit();
         System.out.println(this + " решил покурить");
         setCondition(Condition.HEALTH, -0.3);
-        cigarette.goOut();
         setTypes(HumanType.SMOKING);
+        if (cigarette.isSuitable()) {
+            cigarette.goOut();
+        }
     }
     public void putIn(AbleToStore store, Item... items){
         if (items.length==1){
@@ -254,6 +267,7 @@ public class Human implements Drive{
         }
         store.setItems(items);
     }
+    @Override
     public void drive(Car car) throws WrongDriverException{
         if (this!=car.getDriver()){
             throw new WrongDriverException(this+" не может сесть за руль, т.к не вписан в страховку!");
@@ -261,13 +275,15 @@ public class Human implements Drive{
         System.out.println(this + " нажал на газ");
         car.start();
         getLocation().removePeople(this);
-
+        getLocation().removeItems(car);
     }
+    @Override
     public void getInCar(Car car, Human... humans){
         car.setHumans(humans);
         ArrayList<Human> people = new ArrayList<>(Arrays.asList(humans));
         people.forEach(human -> addPos(car));
     }
+    @Override
     public void dissamble(Car car){
         Drive.super.dissamble(car);
         System.out.println(this.getLocation());
@@ -285,17 +301,6 @@ public class Human implements Drive{
             this.lefthands.take(part);
         }
     }
-    public void bowHead(){
-        head.bow();
-        lookHuman = null;
-        lookItem = null;
-        lookLocation = null;
-    }
-    public void nod(){
-        head.bow();
-        head.raise();
-    }
-
     public void setCondition(Condition condition, double var){
         switch (condition){
             case COMFORT:
@@ -316,16 +321,25 @@ public class Human implements Drive{
             case COLLECT:
                 this.conditions[Condition.COLLECT.ordinal()] +=var;
                 break;
-            case SUPRISE:
-                this.conditions[Condition.SUPRISE.ordinal()] +=var;
+            case SURPRISE:
+                this.conditions[Condition.SURPRISE.ordinal()] +=var;
                 break;
         }
     }
     public void setAge(int age){
         this.age = age;
     }
-    public double getCondition(Condition cond){
-        return this.conditions[cond.ordinal()];
+    public Head getHead(){
+        return head;
+    }
+    public Hair getHair(){
+        return hair;
+    }
+    public Hands getRighthands(){
+        return righthands;
+    }
+    public Hands getLefthands(){
+        return lefthands;
     }
     public void setClothes(Clothes... clothes){
         for (Clothes clothes1: clothes){
@@ -347,12 +361,11 @@ public class Human implements Drive{
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Human human = (Human) obj;
-        return name.equals(human.name);
+        return name.equals(human.name) && this.age==human.age;
     }
     public int hashCode(){
         int hash = 31;
-        hash += 31 * Objects.hashCode(name);
+        hash += 31 * name.hashCode()+11 * Objects.hashCode(age);
         return hash;
     }
-
 }

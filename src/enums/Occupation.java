@@ -5,7 +5,7 @@ public enum Occupation {
     UNDERTAKER("помощник директора"),
     MECHANIC("механик"),
     DIR_FUNERAL_HOME("директор похоронного бюро, роспоряжавщийся церемонией ");
-    String name;
+    final String name;
     Occupation(String name){
         this.name=name;
     }

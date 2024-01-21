@@ -3,7 +3,7 @@ package enums;
 public enum Clothes {
     GLOVES("перчатки"),
     DRESS("платье");
-    String name;
+    final String name;
     Color color;
     Clothes(String name){
         this.name = name;

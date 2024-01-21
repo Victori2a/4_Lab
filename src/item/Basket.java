@@ -1,31 +1,34 @@
 package item;
 
 import base.Item;
+import java.util.Random;
 
 public class Basket extends Item {
-    Flowers flowers;
+    public static final int k = 5;
+    private final Flowers[] flowers = new Flowers[k];
     public Basket(String name) {
         super(name);
     }
     public void setFlowers(){
-        this.flowers = Flowers.values()[(int)(Math.random()*Flowers.values().length)];
+        new Flowers().creatureBouquet();
     }
-    public String getFlowers(){
-        return this.flowers.getName();
-    }
-    public static enum Flowers{
-        ROSE("Розы"),
-        TULIPS("Тюльпаны"),
-        LILIES("Лилии");
-        String name;
-        Flowers(String name){
-            this.name = name;
+
+    public class Flowers{
+        public String name;
+        public final String[] names = new String[]{"Розы", "Лилии", "Тюльпаны", "Хризантемы","Ирисы"};
+        public Flowers(){
+            this.name = names[new Random().nextInt(names.length)];
         }
         public String getName(){
             return name;
         }
+        public void creatureBouquet(){
+            for (int i =0; i<k; i++){
+                Basket.this.flowers[i] = new Flowers();
+            }
+        }
     }
     public String toString(){
-        return (name+", в которой " + this.getFlowers()+", ");
+        return name;
     }
 }

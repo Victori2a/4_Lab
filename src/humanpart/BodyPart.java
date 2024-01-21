@@ -1,4 +1,4 @@
-package humanPart;
+package humanpart;
 
 import base.Human;
 

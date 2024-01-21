@@ -1,11 +1,11 @@
-package humanPart;
+package humanpart;
 
 import base.Human;
 
 public class Head extends BodyPart{
-    private Eyes eyes;
-    private Face face;
-    private Mouth mouth;
+    private final Eyes eyes;
+    private final Face face;
+    private final Mouth mouth;
     public Head(String name, Human owner) {
         super(name, owner);
         eyes = new Eyes("глаза", owner);
@@ -13,8 +13,14 @@ public class Head extends BodyPart{
         mouth = new Mouth("рот", owner);
     }
     public void bow(){
+        getOwner().lookItem = null;
+        getOwner().lookLocation=null;
+        getOwner().lookHuman = null;
     }
-    public void raise(){
+    public void raise(Human human){
+        if (getOwner().lookHuman!=null){
+            getOwner().lookHuman=human;
+        }
     }
     public Eyes getEyes(){
         return eyes;

@@ -1,12 +1,11 @@
-package humanPart;
+package humanpart;
 
 import base.Human;
+import enums.Condition;
 import enums.HumanType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 public class Mouth extends BodyPart{
+    public boolean open;
     public Mouth(String name, Human owner) {
         super(name, owner);
     }
@@ -15,7 +14,11 @@ public class Mouth extends BodyPart{
             System.out.println(this.getOwner()+ " изобразила на лице чудовищно широкую улыбку");
 
         } else{
+            getOwner().setCondition(Condition.FUN,3);
             System.out.println(this + " улыбнулась");
         }
+    }
+    public void move(){
+        open = true;
     }
 }

@@ -6,9 +6,9 @@ public enum Condition {
     SATISFACTION("удовлетворённость"),
     DILIGENCE("старательность"),
     COLLECT("собранность"),
-    SUPRISE("удивлённость"),
+    SURPRISE("удивлённость"),
     FUN("радость");
-    String name;
+    final String name;
     Condition(String name){
         this.name = name;
     }

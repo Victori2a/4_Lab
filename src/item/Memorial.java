@@ -3,7 +3,6 @@ package item;
 import base.Human;
 import base.Item;
 import base.Position;
-import enums.Color;
 import enums.ItemType;
 
 public class Memorial extends Item implements Position {
@@ -13,6 +12,7 @@ public class Memorial extends Item implements Position {
         this.surname = surname;
         setType(type);
     }
+    @Override
     public String toString() {
         return name+" c фамилией "+surname;
     }

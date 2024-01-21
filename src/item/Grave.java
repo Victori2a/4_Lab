@@ -6,9 +6,8 @@ import enums.Color;
 import base.Position;
 
 public class Grave extends Item {
-    private Corpse owner;
-    public Color color;
-    private Edge edge;
+    private final Corpse owner;
+    private final Edge edge;
     public Grave(String name, Corpse owner){
         super(name);
         this.owner = owner;
@@ -34,6 +33,7 @@ public class Grave extends Item {
         public void addPosition(Human human) {
             human.addPos(this);
         }
+        @Override
         public void addPosition(Item item) {
             item.addPos(this);
         }

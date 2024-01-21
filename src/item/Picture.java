@@ -1,16 +1,15 @@
 package item;
 
 import base.Item;
-import enums.Condition;
 
 public class Picture extends Item {
-    Corpse corpse;
-    public Picture(String name, Corpse corpse) {
+    String object;
+    public Picture(String name, Item item) {
         super(name);
-        this.corpse = corpse;
+        this.object = item.toString();
     }
-
+    @Override
     public String toString(){
-       return name;
+       return name + ", на котором изображён "+ object;
     }
 }

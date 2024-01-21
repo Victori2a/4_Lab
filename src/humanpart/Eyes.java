@@ -1,21 +1,16 @@
-package humanPart;
+package humanpart;
 
 import base.Human;
 import enums.HumanType;
 
 public class Eyes extends BodyPart{
-    private double clarity;
+    private double clarity = 1.0;
     public Eyes(String name, Human owner) {
         super(name, owner);
-        this.clarity = 1;
     }
     public void setClarity(double var){
         this.clarity += var;
     }
-    public double getClarity(){
-        return clarity;
-    }
-
     public void act(Human human) {
         System.out.println(getName()+" "+human + " сщурились из-за яркости" );
         human.setTypes(HumanType.BLINDED);

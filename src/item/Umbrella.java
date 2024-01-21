@@ -1,13 +1,12 @@
 package item;
 
-import base.Human;
 import base.Item;
 import enums.Color;
 import enums.ItemType;
 import java.util.Arrays;
 
 public class Umbrella extends Item {
-    private Color color;
+    private final Color color;
     public Umbrella(String name, Color color, ItemType... types){
         super(name);
         this.color = color;
@@ -17,6 +16,7 @@ public class Umbrella extends Item {
     public Color getColor() {
         return color;
     }
+    @Override
     public String toString(){
         return name;
     }

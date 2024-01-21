@@ -1,9 +1,6 @@
 package item;
 
-import base.Human;
-import enums.HumanType;
 import base.Item;
-import enums.Color;
 
 public class Cigarette extends Item {
     private boolean suitable = false;
@@ -15,5 +12,8 @@ public class Cigarette extends Item {
     }
     public void lit(){
         this.suitable = true;
+    }
+    public boolean isSuitable(){
+        return suitable;
     }
 }

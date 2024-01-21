@@ -5,7 +5,7 @@ public enum Color {
     BLACK("Чёрный"),
     YELLOW("Жёлтый"),
     BRIGHT_GREEN("Ярко-зелёный");
-    String name;
+    final String name;
     Color(String name){
         this.name = name;
     }

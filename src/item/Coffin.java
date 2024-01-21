@@ -1,34 +1,33 @@
 package item;
 
-import base.Human;
 import base.Item;
+import base.Position;
 import enums.Color;
-import enums.ItemType;
 
 public class Coffin extends Item {
-    private Corpse owner;
-    private Color color = null;
-    private Grave grave;
-    private boolean lock;
-    public Coffin(String name, Corpse owner, Color color, Grave grave, boolean lock){
+    private final Corpse owner;
+    private final Color color;
+    private final Grave grave;
+    public Coffin(String name, Corpse owner, Color color, Grave grave){
         super(name);
         this.color=color;
         this.grave = grave;
         this. owner=owner;
-        this.lock = lock;
-        if (lock){
-            this.setType(ItemType.REPAIRED_LOCKS);
-        }
+        assignCoffin(owner);
+    }
+
+    private void assignCoffin(Corpse owner) {
+        owner.setCoffin(this);
     }
 
     public Corpse getOwner(){
         return this.owner;
     }
-    public void stand(){
-        if (this.getColor()==Color.WHITE ) {
-            System.out.println(getColor()+" " + this +" " + this.getOwner()+ "а стоял над прокладкой на двух хромированных подставках");
-        } else{
-            super.stand();
+    @Override
+    public void stand(Position position) {
+        super.stand(position);
+        if (this.getColor() == Color.WHITE) {
+            System.out.println(getColor() + " " + this + " " + this.getOwner() + "а стоял над прокладкой на двух хромированных подставках");
         }
     }
     public Color getColor() {
@@ -38,5 +37,4 @@ public class Coffin extends Item {
     public String toString() {
         return name;
     }
-
 }

@@ -1,14 +1,16 @@
 package item;
 
-import base.Human;
 import base.Item;
-import enums.Color;
 
 public class Corpse extends Item {
-    private String corpseName;
+    private final String corpseName;
+    private Coffin coffin;
     public Corpse(String name,String corpseName){
         super(name);
         this.corpseName = corpseName;
+    }
+    public void setCoffin(Coffin coffin){
+        this.coffin = coffin;
     }
     public String toString() {
         return corpseName;

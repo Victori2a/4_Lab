@@ -9,7 +9,5 @@ public class Book extends Item {
         super(name);
         this.pages = pages;
     }
-    public String getName(){
-        return name;
-    }
+
 }

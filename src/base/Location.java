@@ -2,15 +2,14 @@ package base;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import enums.ItemType;
 import enums.LocType;
 import exception.ObjectAddedToLocationException;
 
 public class Location {
     protected String name;
-    private ArrayList<Human> people = new ArrayList<>();
-    private ArrayList<Item> items = new ArrayList<>();
-    private ArrayList<LocType> locType = new ArrayList<>();
+    private final ArrayList<Human> people = new ArrayList<>();
+    private final ArrayList<Item> items = new ArrayList<>();
+    private final ArrayList<LocType> locType = new ArrayList<>();
     public Location(String name, LocType... locType){
         this.name = name;
         setTypes(locType);
@@ -49,15 +48,14 @@ public class Location {
     protected void addItem(Item item){
         this.items.add(item);
     }
-    public void setItems(Item... items) {
-        this.items.addAll(Arrays.asList(items));
-        for (Item item : items) {
+    public void setItems(Item... items) throws ObjectAddedToLocationException {
+        for (Item item:items) {
+            if (this.items.contains(item)) {
+                throw new ObjectAddedToLocationException(item + " уже находится в этой локации");
+            }
+            this.items.add(item);
             item.setLocation(this);
         }
-    }
-    public Item[] getItems() {
-        Item[] items = new Item[this.items.size()];
-        return this.items.toArray(items);
     }
     public void removeItems(Item... items) {
         for(Item item : items){

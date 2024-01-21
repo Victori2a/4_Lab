@@ -3,26 +3,25 @@ package item;
 import base.Human;
 import base.Item;
 import base.Position;
-import enums.Color;
 import enums.ItemType;
 import interfaces.AbleToStore;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Objects;
 
 public class Car extends Item implements Position, AbleToStore {
     private boolean isSuitable = true;
     private Human driver = null;
     private boolean headlights = false;
-    private int speed = 0;
-    private ArrayList<Item> trunk = new ArrayList<>();
-    private ArrayList<Human> interior = new ArrayList<>();
+    private int speed;
+    private final ArrayList<Item> trunk = new ArrayList<>();
+    private final ArrayList<Human> interior = new ArrayList<>();
     public Car(String name, Human driver){
         super(name);
         this.driver = driver;
+        this.speed = 0;
     }
     public Car(String name){super(name);}
+    @Override
     public void setItems(Item... items) {
         this.trunk.addAll(Arrays.asList(items));
     }
@@ -33,23 +32,21 @@ public class Car extends Item implements Position, AbleToStore {
 
     public void setHumans(Human... humans) {
         this.interior.addAll(Arrays.asList(humans));
-        System.out.println("В машину "+getDriver()+"а сели ");
+        System.out.print("В машину "+getDriver()+"а сели ");
         for (Human h:humans){
+            h.addPos(this);
             System.out.print(h+", ");
         }
     }
     public boolean getHeadlights(){
         return headlights;
     }
-    public Item[] getItems() {
-        Item[] trunk1 = new Item[this.trunk.size()];
-        return this.trunk.toArray(trunk1);
-    }
     public void started(){
         this.headlights = true;
         System.out.println(name+" завёлся. Фары загорелись");
         this.setType(ItemType.BRIGHT);
     }
+    @Override
     public void stand(Position position){
         position.addPosition(this);
         if (this.hasType(ItemType.INCONSPICUOUS)) {
@@ -66,14 +63,23 @@ public class Car extends Item implements Position, AbleToStore {
     public void getMechanisms(){
         isSuitable = false;
     }
+    public boolean isSuitable(){
+        return isSuitable;
+    }
+    @Override
     public String toString(){
-        return "машиной";
+        if (getDriver()!=null){
+            return name+" "+getDriver()+"а";
+        } else{
+            return name;
+        }
     }
 
     @Override
     public void addPosition(Human human) {
         human.addPos(this);
     }
+    @Override
     public void addPosition(Item item) {
         item.addPos(this);
     }

@@ -2,12 +2,11 @@ package base;
 
 import enums.Color;
 import enums.ItemType;
-
+import interfaces.HasLocation;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Objects;
 
-public abstract class Item {
+public abstract class Item implements HasLocation {
     protected String name;
     protected Location location;
     protected Position position;
@@ -27,24 +26,19 @@ public abstract class Item {
     public boolean hasType(ItemType type) {
         return this.types.contains(type);
     }
-    public Location getLocation() {
-        return this.location;
-    }
+    @Override
     public void setLocation(Location location) {
         location.addItem(this);
         this.location = location;
+    }
+    public Location getLocation(){
+        return location;
     }
     public void addPos(Position position){
         this.position = position;
     }
     public void stand(Position position){
         position.addPosition(this);
-        //System.out.println(this + " стоит на " + position);
     }
-    public Position getPosition(){
-        return position;
-    }
-    public void stand(){
-        System.out.println(this +" где-то стоит");
-    }
+
 }

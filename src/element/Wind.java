@@ -1,6 +1,6 @@
 package element;
 
-import humanPart.Hair;
+import humanpart.Hair;
 
 public class Wind {
     public String name = "ветер";

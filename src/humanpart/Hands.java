@@ -1,9 +1,13 @@
-package humanPart;
+package humanpart;
 
 import base.Human;
+import base.Item;
+
+import java.util.ArrayList;
 
 public class Hands extends BodyPart {
     public Human hold = null;
+    public ArrayList<Item> holdItem = new ArrayList<>();
 
     public Hands(String name, Human owner) {
         super(name, owner);

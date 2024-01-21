@@ -8,32 +8,28 @@ import exception.ObjectAddedToLocationException;
 import exception.WrongDriverException;
 import item.*;
 
-import java.util.Arrays;
-
-
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ObjectAddedToLocationException{
         try {
             Location cemetery = new Location("кладбище", LocType.QUIETLY, LocType.BURIAL);
-            Human director = new Human("директор", Occupation.DIR_FUNERAL_HOME);
-            Human rachel = new Human("Рэчел");
+            Human director = new Human("директор",56, Occupation.DIR_FUNERAL_HOME);
+            Human rachel = new Human("Рэчел",35);
             Book book = new Book("Евангелие от Матфея", 280);
-            Human luis = new Human("Луис");
-            Human oz = new Human("Оз", Occupation.GRAVEDIGGER);
+            Human luis = new Human("Луис",36);
+            Human oz = new Human("Оз",40, Occupation.GRAVEDIGGER);
             Corpse gadge = new Corpse("мертвец","Гэдж");
-            Grave grave = new Grave("гроб",gadge);
+            Grave grave = new Grave("могила",gadge);
             grave.setEdgeColor(Color.BRIGHT_GREEN);
-            Coffin coffin = new Coffin("гроб",gadge, Color.WHITE, grave, true);
-            Human irvin = new Human("Ирвин");
+            Coffin coffin = new Coffin("гроб",gadge, Color.WHITE, grave);
+            Human irvin = new Human("Ирвин",62);
             irvin.setTypes(HumanType.EMBARRASSED, HumanType.CONFUSED);
-            irvin.head.getFace().setTypes(FaceType.EYES_BAG, FaceType.BRISTLE);
+            irvin.getHead().getFace().setTypes(FaceType.EYES_BAG, FaceType.BRISTLE);
             cemetery.setPeople(irvin, luis, rachel, oz, director);
-            irvin.hair.setTypes(HairType.GRAY, HairType.THIN);
+            irvin.getHair().setTypes(HairType.GRAY, HairType.THIN);
             Basket[] basket = new Basket[5];
             for (int i = 0; i < basket.length; i++) {
                 basket[i] = new Basket("корзина");
-                basket[i].setFlowers();
-                basket[i].setLocation(cemetery);
+                basket[i].setFlowers();basket[i].setLocation(cemetery);
             }
             Memorial memorial = new Memorial("памятник","Фиппс", ItemType.PSEUDO_ROMAN, ItemType.HUGE);
             Car car = new Car("грузовик", oz);
@@ -41,23 +37,21 @@ public class Main {
             Car cars = new Car("машины");
             Human[] visitors = new Human[10];
             for (int i = 0; i < visitors.length; i++) {
-                visitors[i] = new Human(" присутствующий");
+                visitors[i] = new Human(" присутствующий",  38);
                 visitors[i].setLocation(cemetery);
                 visitors[i].setThings(new Umbrella("зонт",Color.BLACK, ItemType.GOVERNMENT));
             }
             cemetery.setItems(book, grave, coffin, car, memorial);
-
 
             rachel.askedRead(director, book, "'Пустите детей и не препятствуйте им приходить ко мне'");
             luis.stand(grave.getEdge());
             luis.look(irvin);
             irvin.look(luis);
             luis.argue(irvin);
-            new Wind().blow(irvin.hair);
+            new Wind().blow(irvin.getHair());
             luis.seem();
             luis.tryToPity();
-            coffin.stand();
-            memorial.setLocation(cemetery);
+            coffin.stand(grave.getEdge());
             luis.look(grave.getEdge());
             for (Basket bask : basket) {
                 bask.stand(grave.getEdge());
@@ -66,7 +60,7 @@ public class Main {
             luis.look(cemetery);
             director.say(" 'Склоним головы в знак скорби'");
             for (Human human : cemetery.getPeople()) {
-                human.bowHead();
+                human.getHead().bow();
             }
             luis.look(car);
             if (luis.hasType(HumanType.CONFUSED)) {
@@ -78,10 +72,10 @@ public class Main {
             try {
                 oz.drive(car);
             } catch (WrongDriverException e) {
-                e.printStackTrace();
+                System.err.println(e.getMessage());
             }
             director.say(" Аминь");
-            luis.takeBodyPart(rachel.lefthands);
+            luis.takeBodyPart(rachel.getLefthands());
             rachel.tryToProtest();
             luis.stand(cars);
             for (Human h : cemetery.getPeople()) {
@@ -89,34 +83,34 @@ public class Main {
             }
 
 
-            Human assistant = new Human("помощник", Occupation.UNDERTAKER);
-            Human ellie = new Human("Элли");
+            Human assistant = new Human("помощник",27, Occupation.UNDERTAKER);
+            Human ellie = new Human("Элли",13);
             ellie.setTypes(HumanType.ANXIOUS);
             luis.setTypes(HumanType.SILENT);
-            Human jude = new Human("Джуд", Occupation.MECHANIC);
-            jude.head.getFace().setTypes(FaceType.EXHAUSTED);
+            Human jude = new Human("Джуд",51, Occupation.MECHANIC);
+            jude.getHead().getFace().setTypes(FaceType.EXHAUSTED);
             Rack rack = new Rack("стойка");
             rack.setType(ItemType.SURREAL);
             Car hundai = new Car("машина", luis);
             Picture photo = new Picture("фото", gadge);
+            ellie.setThings(photo);
+            cemetery.setPeople(ellie, jude); cemetery.setItems(rack, hundai,photo);
             System.out.println();
 
             assistant.setThings(director.getThings());
             assistant.putIn(rack, assistant.getThings());
-            luis.takeBodyPart(ellie.righthands);
+            luis.takeBodyPart(ellie.getRighthands());
             luis.stand(hundai);
             ellie.setClothes(Clothes.DRESS, Clothes.GLOVES);
-            ellie.setThings(photo);
             jude.goUpTo(luis);
             luis.getInCar(hundai, rachel, ellie);
             luis.look(jude);
             jude.say(luis, "— Как ты, Луис?");
             jude.say(rachel, "— Как вы, Рэчел?");
             jude.say(ellie, "— А ты, дорогая?");
-            jude.say(ellie, photo);
-            ellie.give(jude, photo);
-            jude.age = 40;
-            Position smwh = new Position() {
+            jude.sayAbout(ellie, photo);
+            Position past = new Position() {
+                @Override
                 public void addPosition(Human human) {
                     System.out.print("P.S: ");
                     Human clone = human;
@@ -130,17 +124,17 @@ public class Main {
                     final int age = 30;
                     class Disassembler {
                         public void work(Human human, Car car) {
-                            car.setLocation(clone.getLocation());
                             human.setAge(age);
+                            car.setLocation(clone.getLocation());
                             human.dissamble(car);
                         }
                     }
                     new Disassembler().work(clone, new Car("дорожные"));
                 }
             };
-            smwh.addPosition(jude);
+            past.addPosition(jude);
         } catch(ObjectAddedToLocationException e){
-            e.printStackTrace();
+            System.err.println(e.getMessage());
         }
 
     }

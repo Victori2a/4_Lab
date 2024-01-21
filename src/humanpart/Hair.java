@@ -1,4 +1,4 @@
-package humanPart;
+package humanpart;
 
 import base.Human;
 import enums.HairType;
@@ -14,10 +14,6 @@ public class Hair extends BodyPart{
     }
     public void setTypes(HairType... faceTypes){
         hairTypes.addAll(Arrays.asList(faceTypes));
-    }
-    public HairType[] getTypes() {
-        HairType[] types1 = new HairType[this.hairTypes.size()];
-        return this.hairTypes.toArray(types1);
     }
     public void disheveled(){
         System.out.println(getName() + " спутались. Ухоженность волос "+getOwner()+": " + stylishLook);
